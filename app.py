@@ -1,3 +1,51 @@
+from flask import Response
+from datetime import datetime
+
+@app.route("/sitemap.xml", methods=["GET"])
+def sitemap():
+    # الصفحات الثابتة للموقع - عدّل حسب بنية موقعك
+    pages = [
+        {
+            "loc": "https://tighri.com/",
+            "changefreq": "weekly",
+            "priority": "1.0"
+        },
+        {
+            "loc": "https://tighri.com/about",
+            "changefreq": "monthly",
+            "priority": "0.8"
+        },
+        {
+            "loc": "https://tighri.com/contact",
+            "changefreq": "monthly",
+            "priority": "0.8"
+        },
+        {
+            "loc": "https://tighri.com/professionals",
+            "changefreq": "weekly",
+            "priority": "0.9"
+        },
+    ]
+
+    # بناء المحتوى XML
+    xml_parts = []
+    for page in pages:
+        xml_parts.append(f"""
+    <url>
+        <loc>{page['loc']}</loc>
+        <lastmod>{datetime.utcnow().date().isoformat()}</lastmod>
+        <changefreq>{page['changefreq']}</changefreq>
+        <priority>{page['priority']}</priority>
+    </url>""")
+
+    sitemap_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset 
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{''.join(xml_parts)}
+</urlset>"""
+
+    return Response(sitemap_xml, mimetype='application/xml')
+
 from flask import Flask, request, redirect
 
 app = Flask(__name__)
