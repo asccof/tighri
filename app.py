@@ -1,3 +1,13 @@
+from flask import Flask, request, redirect
+
+app = Flask(__name__)
+
+@app.before_request
+def redirect_www_to_non_www():
+    if request.host.startswith("www."):
+        # إعادة التوجيه إلى النطاق الأساسي tighri.com
+        url = request.url.replace("://www.", "://", 1)
+        return redirect(url, code=301)  # إعادة توجيه دائمة
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
