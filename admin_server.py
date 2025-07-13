@@ -81,7 +81,7 @@ def admin_logout():
     return redirect(url_for('admin_login'))
 
 # Route principale admin
-@app.route('/')
+@app.route('/admin')
 @login_required
 def admin_dashboard():
     if not current_user.is_admin:
