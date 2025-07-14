@@ -283,7 +283,7 @@ def login():
     
     return render_template('login.html')
 
-@app.route('/logout')
+@app.route('/admin')
 @login_required
 def logout():
     logout_user()
