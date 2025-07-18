@@ -263,6 +263,7 @@ def professional_register():
     
     return render_template('professional_register.html')
 
+# تسجيل الدخول
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -272,22 +273,38 @@ def login():
         
         if user and check_password_hash(user.password_hash, password):
             login_user(user)
-            if user.user_type == 'professional':
-                flash('Bienvenue dans votre espace professionnel!')
+            if user.is_admin:
+                flash('Bienvenue dans votre espace administrateur !')
+                return redirect(url_for('admin_dashboard'))
+            elif user.user_type == 'professional':
+                flash('Bienvenue dans votre espace professionnel !')
                 return redirect(url_for('professional_dashboard'))
             else:
-                flash('Connexion réussie!')
+                flash('Connexion réussie !')
                 return redirect(url_for('index'))
         else:
-            flash('Nom d\'utilisateur ou mot de passe incorrect')
+            flash("Nom d'utilisateur ou mot de passe incorrect")
     
     return render_template('login.html')
 
+
+# إعادة توجيه /admin نحو لوحة تحكم المشرف
 @app.route('/admin')
+@login_required
+def admin_dashboard_redirect():
+    if not current_user.is_admin:
+        flash('Accès refusé')
+        return redirect(url_for('login'))
+    return redirect(url_for('admin_dashboard'))
+
+
+# تسجيل الخروج
+@app.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
+
 
 @app.route('/professional_dashboard')
 @login_required
